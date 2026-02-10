@@ -1543,6 +1543,47 @@
             overflow-y: auto;
         }
 
+        /* Checkout modal: scrollable body + sticky footer so Pay button is always visible */
+        .checkout-modal-content {
+            max-width: 480px;
+            width: 90%;
+            max-height: 90vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            border-radius: 12px;
+            background: var(--bg-card);
+        }
+        .checkout-modal-body {
+            overflow-y: auto;
+            flex: 1;
+            min-height: 0;
+            -webkit-overflow-scrolling: touch;
+        }
+        .checkout-modal-footer {
+            flex-shrink: 0;
+            padding: 1rem 1.5rem;
+            border-top: 1px solid var(--border);
+            background: var(--bg-card);
+        }
+        .checkout-modal-footer .btn { border-radius: 8px; }
+        .checkout-qty-input {
+            width: 3.5rem;
+            padding: 0.5rem 0.35rem;
+            text-align: center;
+            font-weight: 600;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            font-size: 0.875rem;
+        }
+        .checkout-qty-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.2);
+        }
+
         .toast {
             position: fixed;
             top: 2rem;
@@ -3417,9 +3458,9 @@
             // Check if plan was pre-selected from public site (WEB-03)
             const preSelectedPlan = localStorage.getItem('preSelectedPlan');
             if (preSelectedPlan) {
-                // Scenario A: Plan pre-selected, go directly to checkout simulation
+                // Scenario A: Plan pre-selected, go directly to checkout page
                 localStorage.removeItem('preSelectedPlan');
-                handlePlanSelection(preSelectedPlan);
+                router.navigate('/checkout/' + preSelectedPlan);
             } else {
                 // Scenario B: No plan pre-selected, show Plan Selection screen
                 router.navigate('/select-plan');
@@ -4596,10 +4637,10 @@
                                 <h3 style="font-weight: 700; margin-bottom: 0.5rem;">Team Plan</h3>
                                 <div style="font-size: 2rem; font-weight: 700; color: var(--primary); margin-bottom: 1rem;">$99<span style="font-size: 1rem; color: var(--text-secondary);">/mo</span></div>
                                 <ul style="font-size: 0.875rem; color: var(--text-secondary); padding-left: 1.5rem; margin-bottom: 1.5rem;">
-                                    <li style="margin-bottom: 0.5rem;">Up to 10 social accounts</li>
-                                    <li style="margin-bottom: 0.5rem;">5 Team members</li>
+                                    <li style="margin-bottom: 0.5rem;">1–3 Workspaces</li>
+                                    <li style="margin-bottom: 0.5rem;">Up to 5 users included</li>
                                     <li style="margin-bottom: 0.5rem;">150 AI Credits/month</li>
-                                    <li style="margin-bottom: 0.5rem;">Approval workflows</li>
+                                    <li style="margin-bottom: 0.5rem;">Unlimited manual posts</li>
                                 </ul>
                                 <button class="btn btn-primary" style="width: 100%;" onclick="closeUpgradeModal(); joinWaitlist('team');">Join Team Waitlist</button>
                                 <p style="font-size: 0.7rem; color: var(--text-secondary); text-align: center; margin-top: 0.5rem;">Coming Soon</p>
@@ -4609,10 +4650,10 @@
                                 <h3 style="font-weight: 700; margin-bottom: 0.5rem;">Agency Plan</h3>
                                 <div style="font-size: 2rem; font-weight: 700; color: var(--primary); margin-bottom: 1rem;">$299<span style="font-size: 1rem; color: var(--text-secondary);">/mo</span></div>
                                 <ul style="font-size: 0.875rem; color: var(--text-secondary); padding-left: 1.5rem; margin-bottom: 1.5rem;">
-                                    <li style="margin-bottom: 0.5rem;">25 social accounts</li>
-                                    <li style="margin-bottom: 0.5rem;">15 Team members</li>
-                                    <li style="margin-bottom: 0.5rem;">5 Client workspaces</li>
-                                    <li style="margin-bottom: 0.5rem;">White-label reports</li>
+                                    <li style="margin-bottom: 0.5rem;">Up to 5 Workspaces</li>
+                                    <li style="margin-bottom: 0.5rem;">Up to 15 users included</li>
+                                    <li style="margin-bottom: 0.5rem;">500 AI Credits/month</li>
+                                    <li style="margin-bottom: 0.5rem;">Unlimited manual posts</li>
                                 </ul>
                                 <button class="btn btn-ghost" style="width: 100%;" onclick="closeUpgradeModal(); joinWaitlist('agency');">Join Waitlist</button>
                                 <p style="font-size: 0.7rem; color: var(--text-secondary); text-align: center; margin-top: 0.5rem;">Coming Soon</p>
@@ -4676,13 +4717,13 @@
                                     <span style="color: var(--text-secondary);">/month</span>
                                 </div>
                                 <ul style="font-size: 0.875rem; color: var(--text-secondary); padding-left: 1.25rem; margin-bottom: 1.5rem; flex-grow: 1;">
-                                    <li style="margin-bottom: 0.5rem;">1 User</li>
                                     <li style="margin-bottom: 0.5rem;">1 Workspace</li>
+                                    <li style="margin-bottom: 0.5rem;">1 User included</li>
+                                    <li style="margin-bottom: 0.5rem;">LinkedIn, X, Meta (Instagram &amp; Facebook)</li>
                                     <li style="margin-bottom: 0.5rem;">50 AI Credits/month</li>
-                                    <li style="margin-bottom: 0.5rem;">3 Social Accounts</li>
-                                    <li style="margin-bottom: 0.5rem;">Basic Analytics</li>
+                                    <li style="margin-bottom: 0.5rem;">Unlimited manual posts</li>
                                 </ul>
-                                <button class="btn btn-primary" style="width: 100%;" onclick="handlePlanSelection('solo')">Start 7-Day Trial</button>
+                                <button class="btn btn-primary" style="width: 100%;" onclick="router.navigate('/checkout/solo')">Start 7-Day Trial</button>
                                 <p style="font-size: 0.75rem; color: var(--text-secondary); text-align: center; margin-top: 0.5rem;">Credit card required</p>
                             </div>
                             
@@ -4695,12 +4736,11 @@
                                     <span style="color: var(--text-secondary);">/month</span>
                                 </div>
                                 <ul style="font-size: 0.875rem; color: var(--text-secondary); padding-left: 1.25rem; margin-bottom: 1.5rem; flex-grow: 1;">
-                                    <li style="margin-bottom: 0.5rem;">5 Users (+ $15/seat)</li>
-                                    <li style="margin-bottom: 0.5rem;">1 Workspace</li>
+                                    <li style="margin-bottom: 0.5rem;">1–3 Workspaces</li>
+                                    <li style="margin-bottom: 0.5rem;">Up to 5 users included</li>
+                                    <li style="margin-bottom: 0.5rem;">LinkedIn, X, Meta (Instagram &amp; Facebook)</li>
                                     <li style="margin-bottom: 0.5rem;">150 AI Credits/month</li>
-                                    <li style="margin-bottom: 0.5rem;">10 Social Accounts</li>
-                                    <li style="margin-bottom: 0.5rem;">Advanced Analytics</li>
-                                    <li style="margin-bottom: 0.5rem;">Approval Workflows</li>
+                                    <li style="margin-bottom: 0.5rem;">Unlimited manual posts</li>
                                 </ul>
                                 <button class="btn btn-ghost" style="width: 100%;" onclick="joinWaitlist('team')">Join Waitlist</button>
                             </div>
@@ -4714,12 +4754,11 @@
                                     <span style="color: var(--text-secondary);">/month</span>
                                 </div>
                                 <ul style="font-size: 0.875rem; color: var(--text-secondary); padding-left: 1.25rem; margin-bottom: 1.5rem; flex-grow: 1;">
-                                    <li style="margin-bottom: 0.5rem;">15 Users (+ $15/seat)</li>
-                                    <li style="margin-bottom: 0.5rem;">5 Workspaces (+ $39/workspace)</li>
+                                    <li style="margin-bottom: 0.5rem;">Up to 5 Workspaces</li>
+                                    <li style="margin-bottom: 0.5rem;">Up to 15 users included</li>
+                                    <li style="margin-bottom: 0.5rem;">LinkedIn, X, Meta (Instagram &amp; Facebook)</li>
                                     <li style="margin-bottom: 0.5rem;">500 AI Credits/month</li>
-                                    <li style="margin-bottom: 0.5rem;">25 Social Accounts</li>
-                                    <li style="margin-bottom: 0.5rem;">White-label Reports</li>
-                                    <li style="margin-bottom: 0.5rem;">Priority Support</li>
+                                    <li style="margin-bottom: 0.5rem;">Unlimited manual posts</li>
                                 </ul>
                                 <button class="btn btn-ghost" style="width: 100%;" onclick="joinWaitlist('agency')">Join Waitlist</button>
                             </div>
@@ -4735,122 +4774,106 @@
             `;
         }
 
-        // Handle plan selection (BILL-P1-02: Enhanced Stripe Checkout simulation)
-        function handlePlanSelection(plan) {
-            const workspace = store.getCurrentWorkspace();
-            if (!workspace) {
-                showToast('Please create a workspace first');
-                router.navigate('/onboarding');
-                return;
-            }
-
-            const planPrices = { solo: 29, team: 79, agency: 199 };
+        // Checkout page (full page instead of popup) – plan in path: /checkout/solo
+        function CheckoutPage(plan) {
+            const planPrices = { solo: 49, team: 99, agency: 299 };
             const planCredits = { solo: 50, team: 150, agency: 500 };
-            const planName = plan.charAt(0).toUpperCase() + plan.slice(1);
-
-            // Create immersive Stripe-like checkout modal
-            const modal = document.createElement('div');
-            modal.id = 'stripeCheckoutModal';
-            modal.className = 'modal active';
-            modal.innerHTML = `
-                <div class="modal-content" style="max-width: 480px; border-radius: 12px; overflow: hidden;">
-                    <div id="checkoutContent">
-                        <!-- Header -->
-                        <div style="background: linear-gradient(135deg, #635BFF 0%, #8B5CF6 100%); color: white; padding: 1.5rem; text-align: center;">
-                            <div style="font-size: 1.5rem; font-weight: 700;">💳 Cydra Social</div>
-                            <div style="opacity: 0.9; margin-top: 0.5rem;">Subscribe to ${planName} Plan</div>
+            const planName = (plan || 'solo').charAt(0).toUpperCase() + (plan || 'solo').slice(1);
+            const price = planPrices[plan] || 49;
+            const credits = planCredits[plan] || 50;
+            return `
+                <div class="onboarding-page">
+                    <div class="onboarding-container" style="max-width: 520px;">
+                        <div style="margin-bottom: 1.5rem;">
+                            <a href="#" onclick="router.navigate('/select-plan'); return false;" style="color: var(--text-secondary); font-size: 0.875rem; text-decoration: none;">← Back to plans</a>
                         </div>
-                        
-                        <!-- Order Summary -->
-                        <div style="padding: 1.5rem; border-bottom: 1px solid var(--border);">
-                            <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                        <div style="background: linear-gradient(135deg, #635BFF 0%, #8B5CF6 100%); color: white; padding: 1.5rem; border-radius: 12px; text-align: center; margin-bottom: 1.5rem;">
+                            <div style="font-size: 1.25rem; font-weight: 700;">💳 Cydra Social</div>
+                            <div style="opacity: 0.9; margin-top: 0.25rem;">Subscribe to ${planName} Plan</div>
+                        </div>
+                        <div class="card" style="padding: 1.5rem; margin-bottom: 1rem;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.25rem;">
                                 <span style="color: var(--text-secondary);">${planName} Plan (7-day free trial)</span>
-                                <span style="font-weight: 600;">$${planPrices[plan]}/mo</span>
+                                <span style="font-weight: 600;">$${price}/mo</span>
                             </div>
-                            <div style="font-size: 0.75rem; color: var(--text-secondary);">
-                                ✓ ${planCredits[plan]} AI Credits/month • ✓ Cancel anytime
+                            <div style="font-size: 0.8rem; color: var(--text-secondary);">✓ ${credits} AI Credits/month • ✓ Cancel anytime</div>
+                        </div>
+                        <div class="card" style="padding: 1.25rem; margin-bottom: 1rem;">
+                            <div style="font-size: 0.8rem; font-weight: 600; margin-bottom: 0.75rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.02em;">Optional add-ons</div>
+                            <label style="display: flex; align-items: center; gap: 0.5rem; padding: 0.4rem 0; cursor: pointer;">
+                                <input type="checkbox" id="addon_ai50_3m" aria-label="Extra AI Credits 50 for 3 months">
+                                <span style="flex: 1; font-size: 0.9rem;">Extra AI Credits (50) – 3 months</span>
+                                <span style="font-weight: 600;">$15</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 0.5rem; padding: 0.4rem 0; cursor: pointer;">
+                                <input type="checkbox" id="addon_ai100" aria-label="Extra AI Credits 100">
+                                <span style="flex: 1; font-size: 0.9rem;">Extra AI Credits (100)</span>
+                                <span style="font-weight: 600;">$25</span>
+                            </label>
+                            <div style="display: flex; align-items: center; gap: 0.75rem; padding: 0.4rem 0;">
+                                <label for="addon_workspace_qty" style="flex: 1; font-size: 0.9rem;">Additional Workspace</label>
+                                <input type="number" id="addon_workspace_qty" class="checkout-qty-input" min="0" value="0" aria-label="Quantity additional workspace">
+                                <span style="font-weight: 600; font-size: 0.85rem;">$39/mo each</span>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 0.75rem; padding: 0.4rem 0;">
+                                <label for="addon_seat_qty" style="flex: 1; font-size: 0.9rem;">Additional User Seat</label>
+                                <input type="number" id="addon_seat_qty" class="checkout-qty-input" min="0" value="0" aria-label="Quantity additional user seat">
+                                <span style="font-weight: 600; font-size: 0.85rem;">$15/mo each</span>
+                            </div>
+                            <div id="checkoutAddonLines" style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 0.5rem;"></div>
+                            <div style="display: flex; justify-content: space-between; margin-top: 0.75rem; font-weight: 600; padding-top: 0.5rem; border-top: 1px dashed var(--border);">
+                                <span>Total (first month)</span>
+                                <span id="checkoutTotal">$${price}</span>
                             </div>
                         </div>
-                        
-                        <!-- Card Details (Pre-filled for demo) -->
-                        <div style="padding: 1.5rem;">
-                            <div style="margin-bottom: 1rem;">
-                                <label style="display: block; font-size: 0.875rem; font-weight: 500; margin-bottom: 0.5rem;">Card Number</label>
-                                <div style="display: flex; align-items: center; background: var(--bg-tertiary); border: 1px solid var(--border); border-radius: 8px; padding: 0.75rem;">
+                        <div class="card" style="padding: 1.25rem; margin-bottom: 1.5rem;">
+                            <div style="font-size: 0.8rem; font-weight: 600; margin-bottom: 0.5rem; color: var(--text-secondary); text-transform: uppercase;">Payment</div>
+                            <div style="margin-bottom: 0.75rem;">
+                                <label style="display: block; font-size: 0.8rem; font-weight: 500; margin-bottom: 0.35rem;">Card Number</label>
+                                <div style="display: flex; align-items: center; background: var(--bg-tertiary); border: 1px solid var(--border); border-radius: 8px; padding: 0.6rem 0.75rem;">
                                     <span style="margin-right: 0.5rem;">💳</span>
-                                    <input type="text" value="4242 4242 4242 4242" readonly style="flex: 1; background: transparent; border: none; font-family: monospace; font-size: 1rem;">
-                                    <span style="color: var(--text-secondary); font-size: 0.75rem;">TEST</span>
+                                    <input type="text" value="4242 4242 4242 4242" readonly style="flex: 1; background: transparent; border: none; font-family: monospace; font-size: 0.95rem; color: var(--text-primary);">
+                                    <span style="color: var(--text-secondary); font-size: 0.7rem;">TEST</span>
                                 </div>
                             </div>
-                            
-                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
                                 <div>
-                                    <label style="display: block; font-size: 0.875rem; font-weight: 500; margin-bottom: 0.5rem;">Expiry</label>
-                                    <input type="text" value="12/28" readonly class="input" style="text-align: center;">
+                                    <label style="display: block; font-size: 0.8rem; font-weight: 500; margin-bottom: 0.35rem;">Expiry</label>
+                                    <input type="text" value="12/28" readonly class="input" style="text-align: center; padding: 0.6rem;">
                                 </div>
                                 <div>
-                                    <label style="display: block; font-size: 0.875rem; font-weight: 500; margin-bottom: 0.5rem;">CVC</label>
-                                    <input type="text" value="123" readonly class="input" style="text-align: center;">
+                                    <label style="display: block; font-size: 0.8rem; font-weight: 500; margin-bottom: 0.35rem;">CVC</label>
+                                    <input type="text" value="123" readonly class="input" style="text-align: center; padding: 0.6rem;">
                                 </div>
                             </div>
-                            
-                            <div style="background: linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%); border-radius: 8px; padding: 0.75rem; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.5rem;">
-                                <span>🎭</span>
-                                <span style="font-size: 0.875rem; color: #92400E;">Demo Mode: No real charges will be made</span>
-                            </div>
-                            
-                            <button id="processPaymentBtn" class="btn btn-primary" style="width: 100%; padding: 1rem; font-size: 1rem;" onclick="processStripePayment('${plan}')">
-                                Start Free Trial →
-                            </button>
-                            
-                            <button style="width: 100%; margin-top: 0.75rem; background: none; border: none; color: var(--text-secondary); cursor: pointer; padding: 0.5rem;" onclick="document.getElementById('stripeCheckoutModal').remove()">
-                                Cancel
-                            </button>
                         </div>
+                        <div style="background: linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%); border-radius: 8px; padding: 0.6rem 0.75rem; margin-bottom: 1rem; font-size: 0.85rem; color: #92400E;">🎭 Demo: No real charges will be made</div>
+                        <button id="processPaymentBtn" type="button" class="btn btn-primary" style="width: 100%; padding: 1rem; font-size: 1.05rem; font-weight: 600;" onclick="processStripePaymentFromPage('${plan || 'solo'}')">
+                            Start Free Trial →
+                        </button>
+                        <button type="button" style="width: 100%; margin-top: 0.75rem; background: none; border: none; color: var(--text-secondary); cursor: pointer; padding: 0.5rem; font-size: 0.9rem;" onclick="router.navigate('/select-plan')">
+                            Cancel
+                        </button>
                     </div>
                 </div>
             `;
-            document.body.appendChild(modal);
         }
 
-        // Process Stripe payment simulation
-        function processStripePayment(plan) {
-            const btn = document.getElementById('processPaymentBtn');
-            const content = document.getElementById('checkoutContent');
-            const planCredits = { solo: 50, team: 150, agency: 500 };
-            const planName = plan.charAt(0).toUpperCase() + plan.slice(1);
-
-            // Show processing state
-            btn.disabled = true;
-            btn.innerHTML = '<span style="display: inline-flex; align-items: center; gap: 0.5rem;"><span class="spinner" style="width: 20px; height: 20px; border: 2px solid rgba(255,255,255,0.3); border-top-color: white; border-radius: 50%; animation: spin 1s linear infinite;"></span> Processing...</span>';
-
-            setTimeout(() => {
-                // Update workspace
-                const workspace = store.getCurrentWorkspace();
-                workspace.plan = plan;
-                workspace.subscriptionStatus = 'active';
-                workspace.subscriptionStartDate = new Date().toISOString();
-                workspace.trialEndsAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString();
-                workspace.aiCredits = planCredits[plan];
-                localStorage.setItem('selectedPlan', plan);
-                store.saveToStorage();
-                store.addActivity({ type: 'subscription', content: `Subscribed to ${plan} plan (7-day trial)` });
-
-                // Show success state with confetti
-                content.innerHTML = `
-                    <div style="text-align: center; padding: 3rem 2rem;">
-                        <div id="confettiContainer" style="position: relative; height: 100px; margin-bottom: 1rem;">
-                            <div style="font-size: 4rem; animation: bounce 1s ease;">🎉</div>
-                        </div>
+        function CheckoutSuccessPage(planName, totalCredits, addonSummary) {
+            const addonText = addonSummary.length ? '<p style="font-size: 0.9rem; color: var(--text-secondary); margin-top: 0.5rem;">Add-ons: ' + addonSummary.join(', ') + '</p>' : '';
+            return `
+                <div class="onboarding-page">
+                    <div class="onboarding-container" style="max-width: 420px; text-align: center;">
+                        <div style="font-size: 4rem; margin-bottom: 1rem;">🎉</div>
                         <h2 style="font-size: 1.5rem; font-weight: 700; margin-bottom: 0.5rem; color: #10B981;">Payment Successful!</h2>
-                        <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">
-                            Welcome to Cydra Social ${planName}!<br>
-                            Your 7-day free trial has started.
+                        <p style="color: var(--text-secondary);">
+                            Welcome to Cydra Social ${planName}.<br>Your 7-day free trial has started.
                         </p>
-                        <div style="background: var(--bg-tertiary); border-radius: 12px; padding: 1rem; margin-bottom: 1.5rem;">
+                        ${addonText}
+                        <div class="card" style="padding: 1.25rem; margin: 1.5rem 0;">
                             <div style="display: flex; justify-content: center; gap: 2rem;">
                                 <div>
-                                    <div style="font-size: 1.5rem; font-weight: 700; color: var(--primary);">${planCredits[plan]}</div>
+                                    <div style="font-size: 1.5rem; font-weight: 700; color: var(--primary);">${totalCredits}</div>
                                     <div style="font-size: 0.75rem; color: var(--text-secondary);">AI Credits</div>
                                 </div>
                                 <div>
@@ -4859,15 +4882,101 @@
                                 </div>
                             </div>
                         </div>
-                        <button class="btn btn-primary" style="width: 100%; padding: 1rem;" onclick="document.getElementById('stripeCheckoutModal').remove(); router.navigate('/dashboard');">
+                        <button type="button" class="btn btn-primary" style="width: 100%; padding: 1rem;" onclick="router.navigate('/dashboard')">
                             Go to Dashboard →
                         </button>
                     </div>
-                `;
+                </div>
+            `;
+        }
 
-                // Trigger confetti animation
+        // Optional add-ons: read from checkout page (or modal) – used by processStripePayment / processStripePaymentFromPage
+        function getCheckoutAddonsFromDom() {
+            const el = (id) => document.getElementById(id);
+            const ai50 = el('addon_ai50_3m');
+            const ai100 = el('addon_ai100');
+            const ws = el('addon_workspace_qty');
+            const seat = el('addon_seat_qty');
+            return {
+                ai50_3m: ai50 ? ai50.checked : false,
+                ai100: ai100 ? ai100.checked : false,
+                workspaceQty: Math.max(0, parseInt(ws && ws.value ? ws.value : 0, 10) || 0),
+                seatQty: Math.max(0, parseInt(seat && seat.value ? seat.value : 0, 10) || 0)
+            };
+        }
+
+        function setupCheckoutAddonListeners(plan) {
+            const planPrices = { solo: 49, team: 99, agency: 299 };
+            const planPrice = planPrices[plan] || 49;
+            const totalEl = document.getElementById('checkoutTotal');
+            const addonLinesEl = document.getElementById('checkoutAddonLines');
+            function update() {
+                const a = getCheckoutAddonsFromDom();
+                const oneTime = (a.ai50_3m ? 15 : 0) + (a.ai100 ? 25 : 0);
+                const monthly = a.workspaceQty * 39 + a.seatQty * 15;
+                const total = planPrice + oneTime + monthly;
+                if (totalEl) totalEl.textContent = '$' + total;
+                const parts = [];
+                if (a.ai50_3m) parts.push('Extra AI (50, 3 mo): $15');
+                if (a.ai100) parts.push('Extra AI (100): $25');
+                if (a.workspaceQty) parts.push(a.workspaceQty + ' Workspace(s): $' + (a.workspaceQty * 39) + '/mo');
+                if (a.seatQty) parts.push(a.seatQty + ' Seat(s): $' + (a.seatQty * 15) + '/mo');
+                if (addonLinesEl) addonLinesEl.innerHTML = parts.length ? parts.join('<br>') : '';
+            }
+            ['addon_ai50_3m', 'addon_ai100', 'addon_workspace_qty', 'addon_seat_qty'].forEach(function(id) {
+                const el = document.getElementById(id);
+                if (el) { el.addEventListener('change', update); if (el.type === 'number') el.addEventListener('input', update); }
+            });
+            update();
+        }
+
+        // Navigate to checkout page (no popup)
+        function handlePlanSelection(plan) {
+            const workspace = store.getCurrentWorkspace();
+            if (!workspace) {
+                showToast('Please create a workspace first');
+                router.navigate('/onboarding');
+                return;
+            }
+            router.navigate('/checkout/' + (plan || 'solo'));
+        }
+
+        // Process payment from checkout page
+        function processStripePaymentFromPage(plan) {
+            const btn = document.getElementById('processPaymentBtn');
+            const planCredits = { solo: 50, team: 150, agency: 500 };
+            const planName = (plan || 'solo').charAt(0).toUpperCase() + (plan || 'solo').slice(1);
+            const addons = getCheckoutAddonsFromDom();
+            let extraCredits = 0;
+            if (addons.ai50_3m) extraCredits += 50;
+            if (addons.ai100) extraCredits += 100;
+            const addonSummary = [];
+            if (addons.ai50_3m) addonSummary.push('Extra AI Credits (50) – 3 months');
+            if (addons.ai100) addonSummary.push('Extra AI Credits (100)');
+            if (addons.workspaceQty) addonSummary.push(addons.workspaceQty + ' Additional Workspace(s)');
+            if (addons.seatQty) addonSummary.push(addons.seatQty + ' Additional User Seat(s)');
+
+            if (btn) {
+                btn.disabled = true;
+                btn.innerHTML = '<span style="display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;"><span class="spinner" style="width: 20px; height: 20px; border: 2px solid rgba(255,255,255,0.3); border-top-color: white; border-radius: 50%; animation: spin 1s linear infinite;"></span> Processing...</span>';
+            }
+
+            setTimeout(() => {
+                const workspace = store.getCurrentWorkspace();
+                if (workspace) {
+                    workspace.plan = plan || 'solo';
+                    workspace.subscriptionStatus = 'active';
+                    workspace.subscriptionStartDate = new Date().toISOString();
+                    workspace.trialEndsAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString();
+                    workspace.aiCredits = (planCredits[plan] || 50) + extraCredits;
+                    workspace.addOns = { ai50_3m: addons.ai50_3m, ai100: addons.ai100, additionalWorkspaces: addons.workspaceQty, additionalSeats: addons.seatQty };
+                    localStorage.setItem('selectedPlan', plan || 'solo');
+                    store.saveToStorage();
+                    store.addActivity({ type: 'subscription', content: 'Subscribed to ' + (plan || 'solo') + ' plan (7-day trial)' + (addonSummary.length ? ' + add-ons' : '') });
+                }
                 createConfetti();
-            }, 2000);
+                renderApp(CheckoutSuccessPage(planName, (planCredits[plan] || 50) + extraCredits, addonSummary));
+            }, 1200);
         }
 
         // Create confetti celebration effect
@@ -5029,12 +5138,13 @@
                                     <span class="price-amount">$49</span>
                                     <span class="price-period">/month</span>
                                 </div>
-                                <p class="pricing-description">Perfect for individual creators and freelancers getting started.</p>
+                                <p class="pricing-description">Individuals &amp; founders</p>
                                 <ul class="pricing-features">
-                                    <li>50 AI-generated posts/month</li>
-                                    <li>Basic analytics</li>
-                                    <li>Content scheduling</li>
-                                    <li>Email support</li>
+                                    <li>1 Workspace</li>
+                                    <li>1 User included</li>
+                                    <li>LinkedIn, X, Meta (Instagram &amp; Facebook)</li>
+                                    <li>50 AI Credits/month</li>
+                                    <li>Unlimited manual posts</li>
                                 </ul>
                                 <button type="button" class="pricing-cta primary" onclick="selectPlan('solo')">Start 7-Day Trial</button>
                             </div>
@@ -5045,12 +5155,13 @@
                                     <span class="price-amount">$99</span>
                                     <span class="price-period">/month</span>
                                 </div>
-                                <p class="pricing-description">Ideal for growing teams and small businesses.</p>
+                                <p class="pricing-description">Small teams</p>
                                 <ul class="pricing-features">
-                                    <li>200 AI-generated posts/month</li>
-                                    <li>Advanced analytics</li>
-                                    <li>Team collaboration</li>
-                                    <li>Custom branding</li>
+                                    <li>1–3 Workspaces</li>
+                                    <li>Up to 5 users included</li>
+                                    <li>LinkedIn, X, Meta (Instagram &amp; Facebook)</li>
+                                    <li>150 AI Credits/month</li>
+                                    <li>Unlimited manual posts</li>
                                 </ul>
                                 <button type="button" class="pricing-cta secondary" onclick="showComingSoonModal('team')">Coming Soon</button>
                             </div>
@@ -5061,13 +5172,13 @@
                                     <span class="price-amount">$299</span>
                                     <span class="price-period">/month</span>
                                 </div>
-                                <p class="pricing-description">For agencies managing multiple clients at scale.</p>
+                                <p class="pricing-description">Agencies &amp; client work</p>
                                 <ul class="pricing-features">
-                                    <li>Unlimited AI-generated posts</li>
-                                    <li>White-label solution</li>
-                                    <li>Client management</li>
-                                    <li>Dedicated account manager</li>
-                                    <li>API access</li>
+                                    <li>Up to 5 Workspaces</li>
+                                    <li>Up to 15 users included</li>
+                                    <li>LinkedIn, X, Meta (Instagram &amp; Facebook)</li>
+                                    <li>500 AI Credits/month</li>
+                                    <li>Unlimited manual posts</li>
                                 </ul>
                                 <button type="button" class="pricing-cta secondary" onclick="showComingSoonModal('agency')">Coming Soon</button>
                             </div>
@@ -5486,144 +5597,6 @@
                     }, 500);
                 }
             }, 800);
-        }
-
-        // Handle plan selection (BILL-P1-02: Enhanced Stripe Checkout simulation)
-        function handlePlanSelection(plan) {
-            const workspace = store.getCurrentWorkspace();
-            if (!workspace) {
-                showToast('Please create a workspace first');
-                router.navigate('/onboarding');
-                return;
-            }
-
-            const planPrices = { solo: 49, team: 99, agency: 299 };
-            const planCredits = { solo: 50, team: 150, agency: 500 };
-            const planName = plan.charAt(0).toUpperCase() + plan.slice(1);
-
-            // Create immersive Stripe-like checkout modal
-            const modal = document.createElement('div');
-            modal.id = 'stripeCheckoutModal';
-            modal.className = 'modal active';
-            modal.innerHTML = `
-                <div class="modal-content" style="max-width: 480px; border-radius: 12px; overflow: hidden;">
-                    <button class="modal-close" onclick="document.getElementById('stripeCheckoutModal').remove()" style="position: absolute; right: 1rem; top: 1rem; z-index: 10; color: white; background: rgba(0,0,0,0.2); border-radius: 50%; width: 24px; height: 24px; border:none; cursor:pointer;">✕</button>
-                    <div id="checkoutContent">
-                        <!-- Header -->
-                        <div style="background: linear-gradient(135deg, #635BFF 0%, #8B5CF6 100%); color: white; padding: 1.5rem; text-align: center;">
-                            <div style="font-size: 1.5rem; font-weight: 700;">💳 Cydra Social</div>
-                            <div style="opacity: 0.9; margin-top: 0.5rem;">Subscribe to ${planName} Plan</div>
-                        </div>
-                        
-                        <!-- Order Summary -->
-                        <div style="padding: 1.5rem; border-bottom: 1px solid var(--border);">
-                            <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
-                                <span style="color: var(--text-secondary);">${planName} Plan (7-day free trial)</span>
-                                <span style="font-weight: 600;">$${planPrices[plan]}/mo</span>
-                            </div>
-                            <div style="font-size: 0.75rem; color: var(--text-secondary);">
-                                ✓ ${planCredits[plan]} AI Credits/month • ✓ Cancel anytime
-                            </div>
-                        </div>
-                        
-                        <!-- Card Details (Pre-filled for demo) -->
-                        <div style="padding: 1.5rem;">
-                            <div style="margin-bottom: 1rem;">
-                                <label style="display: block; font-size: 0.875rem; font-weight: 500; margin-bottom: 0.5rem;">Card Number</label>
-                                <div style="display: flex; align-items: center; background: var(--bg-tertiary); border: 1px solid var(--border); border-radius: 8px; padding: 0.75rem;">
-                                    <span style="margin-right: 0.5rem;">💳</span>
-                                    <input type="text" value="4242 4242 4242 4242" readonly style="flex: 1; background: transparent; border: none; font-family: monospace; font-size: 1rem; color: var(--text-primary);">
-                                    <span style="color: var(--text-secondary); font-size: 0.75rem;">TEST</span>
-                                </div>
-                            </div>
-                            
-                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
-                                <div>
-                                    <label style="display: block; font-size: 0.875rem; font-weight: 500; margin-bottom: 0.5rem;">Expiry</label>
-                                    <input type="text" value="12/28" readonly class="input" style="text-align: center;">
-                                </div>
-                                <div>
-                                    <label style="display: block; font-size: 0.875rem; font-weight: 500; margin-bottom: 0.5rem;">CVC</label>
-                                    <input type="text" value="123" readonly class="input" style="text-align: center;">
-                                </div>
-                            </div>
-                            
-                            <div style="background: linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%); border-radius: 8px; padding: 0.75rem; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.5rem; color: #92400E;">
-                                <span>🎭</span>
-                                <span style="font-size: 0.875rem;">Demo Mode: No real charges will be made</span>
-                            </div>
-                            
-                            <button id="processPaymentBtn" class="btn btn-primary" style="width: 100%; padding: 1rem; font-size: 1rem;" onclick="processStripePayment('${plan}')">
-                                Start Free Trial →
-                            </button>
-                            
-                            <button style="width: 100%; margin-top: 0.75rem; background: none; border: none; color: var(--text-secondary); cursor: pointer; padding: 0.5rem;" onclick="document.getElementById('stripeCheckoutModal').remove()">
-                                Cancel
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            `;
-            document.body.appendChild(modal);
-        }
-
-        // Process Stripe payment simulation
-        function processStripePayment(plan) {
-            const btn = document.getElementById('processPaymentBtn');
-            const content = document.getElementById('checkoutContent');
-            const planCredits = { solo: 50, team: 150, agency: 500 };
-            const planName = plan.charAt(0).toUpperCase() + plan.slice(1);
-
-            // Show processing state
-            btn.disabled = true;
-            btn.innerHTML = '<span style="display: inline-flex; align-items: center; gap: 0.5rem;"><span class="spinner" style="width: 20px; height: 20px; border: 2px solid rgba(255,255,255,0.3); border-top-color: white; border-radius: 50%; animation: spin 1s linear infinite;"></span> Processing...</span>';
-
-            setTimeout(() => {
-                // Update workspace
-                const workspace = store.getCurrentWorkspace();
-                if (workspace) {
-                    workspace.plan = plan;
-                    workspace.subscriptionStatus = 'active';
-                    workspace.subscriptionStartDate = new Date().toISOString();
-                    workspace.trialEndsAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString();
-                    workspace.aiCredits = planCredits[plan];
-                    localStorage.setItem('selectedPlan', plan);
-                    store.saveToStorage();
-                    store.addActivity({ type: 'subscription', content: `Subscribed to ${plan} plan (7-day trial)` });
-                }
-
-                // Show success state with confetti
-                content.innerHTML = `
-                    <div style="text-align: center; padding: 3rem 2rem;">
-                        <div id="confettiContainer" style="position: relative; height: 100px; margin-bottom: 1rem;">
-                            <div style="font-size: 4rem; animation: bounce 1s ease;">🎉</div>
-                        </div>
-                        <h2 style="font-size: 1.5rem; font-weight: 700; margin-bottom: 0.5rem; color: #10B981;">Payment Successful!</h2>
-                        <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">
-                            Welcome to Cydra Social ${planName}!<br>
-                            Your 7-day free trial has started.
-                        </p>
-                        <div style="background: var(--bg-tertiary); border-radius: 12px; padding: 1rem; margin-bottom: 1.5rem;">
-                            <div style="display: flex; justify-content: center; gap: 2rem;">
-                                <div>
-                                    <div style="font-size: 1.5rem; font-weight: 700; color: var(--primary);">${planCredits[plan]}</div>
-                                    <div style="font-size: 0.75rem; color: var(--text-secondary);">AI Credits</div>
-                                </div>
-                                <div>
-                                    <div style="font-size: 1.5rem; font-weight: 700; color: var(--primary);">7</div>
-                                    <div style="font-size: 0.75rem; color: var(--text-secondary);">Trial Days</div>
-                                </div>
-                            </div>
-                        </div>
-                        <button class="btn btn-primary" style="width: 100%; padding: 1rem;" onclick="document.getElementById('stripeCheckoutModal').remove(); router.navigate('/dashboard');">
-                            Go to Dashboard →
-                        </button>
-                    </div>
-                `;
-
-                // Trigger confetti animation
-                createConfetti();
-            }, 2000);
         }
 
         // Create confetti celebration effect
@@ -6530,6 +6503,21 @@
                 return;
             }
             renderApp(PlanSelectionPage());
+        });
+        router.register('/checkout', (params) => {
+            if (!store.state.user) {
+                router.navigate('/login');
+                return;
+            }
+            const workspace = store.getCurrentWorkspace();
+            if (!workspace) {
+                showToast('Please create a workspace first');
+                router.navigate('/onboarding');
+                return;
+            }
+            const plan = (params && params[0]) || 'solo';
+            renderApp(CheckoutPage(plan));
+            setupCheckoutAddonListeners(plan);
         });
         router.register('/workspaces', () => {
             if (!store.state.user) {
