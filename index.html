@@ -2884,19 +2884,7 @@
                         <p style="color: var(--text-secondary);">Generate AI-powered content for your social media</p>
                     </div>
                     
-                    <div class="card" style="margin-bottom: 2rem;">
-                        <h3 style="font-weight: 600; margin-bottom: 1rem;">Select Platforms</h3>
-                        <p style="font-size: 0.875rem; color: var(--text-secondary); margin-bottom: 0.75rem;">Select at least one (LinkedIn or X). Selection sets the character limit.</p>
-                        <div class="grid-auto grid-4" id="platformGrid">
-                            ${['linkedin', 'twitter', 'facebook', 'instagram'].map(platform => `
-                                <div class="platform-card ${selectedPlatforms.includes(platform) ? 'selected' : ''}" 
-                                     onclick="togglePlatform('${platform}')" data-platform="${platform}">
-                                    ${getPlatformIcon(platform)}
-                                    <div style="margin-top: 1rem; font-weight: 600; text-transform: capitalize;">${platform}</div>
-                                </div>
-                            `).join('')}
-                        </div>
-                    </div>
+
                     
                     <div class="card" style="margin-bottom: 2rem;">
                         <h3 style="font-weight: 600; margin-bottom: 1rem;">Content Details</h3>
@@ -2937,6 +2925,22 @@
                     <div id="editorSection" class="hidden">
                         <div class="card" style="margin-top: 2rem;">
                             <h3 style="font-weight: 600; margin-bottom: 1rem;">Edit & Publish</h3>
+
+                            <!-- Platform Selection for Editor -->
+                            <div style="margin-bottom: 1.5rem; padding-bottom: 1.5rem; border-bottom: 1px solid var(--border);">
+                                <label style="display: block; margin-bottom: 0.5rem; font-weight: 600; font-size: 0.9rem;">Target Channels</label>
+                                <p style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 1rem;">Select where you want to publish. Content will be adapted automatically.</p>
+                                <div class="grid-auto grid-4" id="platformGrid">
+                                    ${['linkedin', 'twitter', 'facebook', 'instagram'].map(platform => `
+                                        <div class="platform-card horizontal ${selectedPlatforms.includes(platform) ? 'selected' : ''}" 
+                                             onclick="togglePlatform('${platform}')" data-platform="${platform}"
+                                             style="padding: 0.75rem; display: flex; align-items: center; gap: 0.75rem; min-height: auto;">
+                                            <div style="transform: scale(0.8);">${getPlatformIcon(platform)}</div>
+                                            <div style="font-weight: 600; text-transform: capitalize; font-size: 0.9rem; margin: 0;">${platform}</div>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            </div>
 
                             <!-- Adaptive Content Hub Tabs -->
                             <div id="platformTabs" class="tabs">
@@ -5551,26 +5555,36 @@
         let generatedVariants = [];
 
         function togglePlatform(platform) {
-            const card = document.querySelector(`.platform-card[data-platform="${platform}"]`);
-            if (selectedPlatforms.includes(platform)) {
-                selectedPlatforms = selectedPlatforms.filter(p => p !== platform);
-                if (card) card.classList.remove('selected');
+            // Updated to handle re-renders since the card might be re-drawn
+            const isSelected = selectedPlatforms.includes(platform);
 
+            if (isSelected) {
+                selectedPlatforms = selectedPlatforms.filter(p => p !== platform);
                 // If the active tab was removed, switch to master
                 if (activeTab === platform) {
                     switchTab('master');
                 }
             } else {
                 selectedPlatforms.push(platform);
-                if (card) card.classList.add('selected');
-
                 // Auto-adapt content from Master if available
                 if (postContentState.master) {
-                    postContentState[platform] = adaptContent(postContentState.master, platform);
+                    // Force refresh content from master if empty/default
+                    if (!postContentState[platform]) {
+                        postContentState[platform] = adaptContent(postContentState.master, platform);
+                    }
                 }
             }
+
+            // Re-render the platform cards to show selection state (since they are now dynamicHTML)
+            const cards = document.querySelectorAll(`.platform-card[data-platform="${platform}"]`);
+            cards.forEach(card => {
+                if (isSelected) card.classList.remove('selected');
+                else card.classList.add('selected');
+            });
+
             renderTabs();
         }
+
 
         function switchTab(tab) {
             // Save current content to state before switching
